@@ -24,11 +24,9 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.post('/adddata/:id/:name/:flow_reading/:totaliser_reading', (req, res) => {
-    let id = req.params.id
-    let name = req.params.name
-    let flow_reading = req.params.flow_reading
-    let totaliser_reading = req.params.totaliser_reading
+router.post('/adddata/:id', (req, res) => {
+  const id = req.params.id
+  const { name, flow_reading, totaliser_reading } = req.body;
     client.query(
         `INSERT INTO device (  id, name,flow_reading,totaliser_reading
             ) VALUES ($1,$2,$3,$4);`,
