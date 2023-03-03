@@ -25,14 +25,14 @@ app.use(function (req, res, next) {
   next();
 });
 
-const detailsRoute = require("./routes/details")
+const deviceRoute = require("./routes/device")
 
 
 app.get("/", (request, response) => {
   response.json({ info: "Node.js, Express, and Postgres API" });
 });
 
-app.use("/details",detailsRoute);
+app.use("/device",deviceRoute);
 
 
 app.listen(port, () => {

@@ -24,14 +24,13 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.post('/adddata/:id', (req, res) => {
-  const id = req.params.id
-  const { name, flow_reading, totaliser_reading } = req.body;
+router.post('/flowmeter', (req, res) => {
+  const { id,name, flowrate, totaliser } = req.body;
     client.query(
-        `INSERT INTO device (  id, name,flow_reading,totaliser_reading
+        `INSERT INTO device (  id, name,flowrate,totaliser
             ) VALUES ($1,$2,$3,$4);`,
         [
-            id,name,flow_reading,totaliser_reading
+            id,name,flowrate,totaliser
         ],
         (err) => {
           if (err) {
@@ -45,12 +44,11 @@ router.post('/adddata/:id', (req, res) => {
         }
       );
         res.status('Data Added')
-    // res.json(deviceTypes);
   });
   
-  router.get('/getdata/:id', async (req, res) => {
-    const id = req.params.id;
-    console.log("Id : ",id)
+
+  router.get('/flowmeter/details', async (req, res) => {
+    const id = req.body.id;
     try {
       const result = await client.query(`SELECT * FROM device WHERE id=$1`, [id]);
       res.send(result.rows);
@@ -59,13 +57,13 @@ router.post('/adddata/:id', (req, res) => {
       res.status(500).send('Error retrieving data from bit.io database');
     }
   });
-  router.put('/updatedata/:id', async (req, res) => {
-    const { id } = req.params;
-    const { name, flow_reading, totaliser_reading, changes } = req.body;
+
+  router.put('/flowmeter/details', async (req, res) => {
+    const { id,name, flowrate, totaliser, changes } = req.body;
     try {
       const result1 = await client.query(
-        'UPDATE device SET name=$1, flow_reading=$2, totaliser_reading=$3 WHERE id=$4 RETURNING *',
-        [name, flow_reading, totaliser_reading, id]
+        'UPDATE device SET name=$1, flowrate=$2, totaliser=$3 WHERE id=$4 RETURNING *',
+        [name, flowrate, totaliser, id]
       );
       const result2 = await client.query(
         'INSERT INTO devicehistory (device_id, changes,timestamp) VALUES ($1, $2,NOW()) RETURNING *',
@@ -75,38 +73,6 @@ router.post('/adddata/:id', (req, res) => {
     } catch (error) {
       console.error(error);
       res.status(500).send('Error updating data in database');
-    }
-  });
-  
-  
-
-  // ----------------
-  
-  router.post('/devicetypes', (req, res) => {
-    const deviceType = req.body;
-    deviceTypes.push(deviceType);
-    res.status(201).send('Device type created');
-  });
-  
-  router.put('/devicetypes/:id', (req, res) => {
-    const id = req.params.id;
-    const deviceType = deviceTypes.find((dt) => dt.Id == id);
-    if (deviceType) {
-      deviceType.Name = req.body.Name;
-      res.send('Device type updated');
-    } else {
-      res.status(404).send('Device type not found');
-    }
-  });
-  
-  router.delete('/devicetypes/:id', (req, res) => {
-    const id = req.params.id;
-    const deviceTypeIndex = deviceTypes.findIndex((dt) => dt.Id == id);
-    if (deviceTypeIndex >= 0) {
-      deviceTypes.splice(deviceTypeIndex, 1);
-      res.send('Device type deleted');
-    } else {
-      res.status(404).send('Device type not found');
     }
   });
 
