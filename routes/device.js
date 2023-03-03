@@ -47,8 +47,8 @@ router.post('/flowmeter', (req, res) => {
   });
   
 
-  router.get('/flowmeter/details', async (req, res) => {
-    const id = req.body.id;
+  router.get('/flowmeter/details/:id', async (req, res) => {
+    const id = req.params.id;
     try {
       const result = await client.query(`SELECT * FROM device WHERE id=$1`, [id]);
       res.send(result.rows);
