@@ -6,8 +6,8 @@ const Client = require("pg").Pool;
 const client = new Client({
     user: "dhawansolanki",
     host: "db.bit.io",
-    database: "dhawansolanki/openremote",
-    password: "v2_3zhQc_ZWqNqDpQMaCdKxM3tq4VEgt",
+    database: "",
+    password: "",
     port:5432,
     ssl:true
   });
